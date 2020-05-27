@@ -5,6 +5,7 @@ go 1.12
 require (
 	github.com/Djarvur/go-err113 v0.0.0-20200511133814-5174e21577d5
 	github.com/OpenPeeDeeP/depguard v1.0.1
+	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/bombsimon/wsl/v3 v3.1.0
 	github.com/daixiang0/gci v0.2.4
 	github.com/denis-tingajkin/go-header v0.3.1
@@ -23,8 +24,9 @@ require (
 	github.com/golangci/maligned v0.0.0-20180506175553-b1d89398deca
 	github.com/golangci/misspell v0.0.0-20180809174111-950f5d19e770
 	github.com/golangci/prealloc v0.0.0-20180630174525-215b22d4de21
-	github.com/golangci/revgrep v0.0.0-20180526074752-d9c87f5ffaf0
+	github.com/golangci/revgrep v0.0.0-20180812185044-276a5c0a1039
 	github.com/golangci/unconvert v0.0.0-20180507085042-28b1c447d1f4
+	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
 	github.com/jingyugao/rowserrcheck v0.0.0-20191204022205-72ab7603b68a
 	github.com/jirfag/go-printf-func-name v0.0.0-20191110105641-45db9963cdd3
 	github.com/kyoh86/exportloopref v0.1.7

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +32,7 @@ func (e *Executor) initCompletion() {
 func (e *Executor) executeBashCompletion(cmd *cobra.Command, args []string) error {
 	err := cmd.Root().GenBashCompletion(os.Stdout)
 	if err != nil {
-		return errors.Wrap(err, "unable to generate bash completions: %v")
+		return fmt.Errorf("%s: unable to generate bash completions", err.Error())
 	}
 
 	return nil
@@ -42,7 +41,7 @@ func (e *Executor) executeBashCompletion(cmd *cobra.Command, args []string) erro
 func (e *Executor) executeZshCompletion(cmd *cobra.Command, args []string) error {
 	err := cmd.Root().GenZshCompletion(os.Stdout)
 	if err != nil {
-		return errors.Wrap(err, "unable to generate zsh completions: %v")
+		return fmt.Errorf("unable to generate zsh completions: %w", err)
 	}
 	// Add extra compdef directive to support sourcing command directly.
 	// https://github.com/spf13/cobra/issues/881

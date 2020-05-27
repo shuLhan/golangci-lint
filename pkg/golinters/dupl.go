@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	duplAPI "github.com/golangci/dupl"
-	"github.com/pkg/errors"
 	"golang.org/x/tools/go/analysis"
 
 	"github.com/golangci/golangci-lint/pkg/fsutils"
@@ -51,7 +50,7 @@ func NewDupl() *goanalysis.Linter {
 			for _, i := range issues {
 				toFilename, err := fsutils.ShortestRelPath(i.To.Filename(), "")
 				if err != nil {
-					return nil, errors.Wrapf(err, "failed to get shortest rel path for %q", i.To.Filename())
+					return nil, fmt.Errorf("failed to get shortest rel path for %q: %w", i.To.Filename(), err)
 				}
 				dupl := fmt.Sprintf("%s:%d-%d", toFilename, i.To.LineStart(), i.To.LineEnd())
 				text := fmt.Sprintf("%d-%d lines are duplicate of %s",

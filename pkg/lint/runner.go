@@ -7,8 +7,6 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/pkg/errors"
-
 	"github.com/golangci/golangci-lint/internal/errorutil"
 	"github.com/golangci/golangci-lint/pkg/config"
 	"github.com/golangci/golangci-lint/pkg/fsutils"
@@ -47,7 +45,7 @@ func NewRunner(cfg *config.Config, log logutils.Log, goenv *goutil.Env, es *lint
 
 	enabledLinters, err := es.GetEnabledLintersMap()
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to get enabled linters")
+		return nil, fmt.Errorf("failed to get enabled linters: %w", err)
 	}
 
 	return &Runner{
