@@ -6,7 +6,6 @@ import (
 	"go/token"
 	"strings"
 
-	"github.com/pkg/errors"
 	diffpkg "github.com/sourcegraph/go-diff/diff"
 
 	"github.com/golangci/golangci-lint/pkg/lint/linter"
@@ -243,7 +242,7 @@ func getErrorTextForLinter(lintCtx *linter.Context, linterName string) string {
 func extractIssuesFromPatch(patch string, log logutils.Log, lintCtx *linter.Context, linterName string) ([]result.Issue, error) {
 	diffs, err := diffpkg.ParseMultiFileDiff([]byte(patch))
 	if err != nil {
-		return nil, errors.Wrap(err, "can't parse patch")
+		return nil, fmt.Errorf("can't parse patch: %w", err)
 	}
 
 	if len(diffs) == 0 {
