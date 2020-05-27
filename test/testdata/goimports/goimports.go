@@ -3,10 +3,10 @@
 package goimports
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/golangci/golangci-lint/pkg/config"
-	"github.com/pkg/errors"
 )
 
 func GoimportsLocalTest() {

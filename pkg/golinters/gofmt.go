@@ -1,10 +1,10 @@
 package golinters
 
 import (
+	"fmt"
 	"sync"
 
 	gofmtAPI "github.com/golangci/gofmt/gofmt"
-	"github.com/pkg/errors"
 	"golang.org/x/tools/go/analysis"
 
 	"github.com/golangci/golangci-lint/pkg/golinters/goanalysis"
@@ -48,7 +48,7 @@ func NewGofmt() *goanalysis.Linter {
 
 				is, err := extractIssuesFromPatch(string(diff), lintCtx.Log, lintCtx, gofmtName)
 				if err != nil {
-					return nil, errors.Wrapf(err, "can't extract issues from gofmt diff output %q", string(diff))
+					return nil, fmt.Errorf("can't extract issues from gofmt diff output %q: %w", string(diff), err)
 				}
 
 				for i := range is {
