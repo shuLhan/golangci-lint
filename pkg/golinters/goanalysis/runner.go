@@ -12,6 +12,7 @@ package goanalysis
 import (
 	"bytes"
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"go/ast"
 	"go/parser"
@@ -28,7 +29,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/pkg/errors"
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/gcexportdata"
 	"golang.org/x/tools/go/packages"
@@ -354,7 +354,7 @@ func extractDiagnostics(roots []*action) (retDiags []Diagnostic, retErrors []err
 			if pe, ok := act.err.(*errorutil.PanicError); ok {
 				panic(pe)
 			}
-			retErrors = append(retErrors, errors.Wrap(act.err, act.a.Name))
+			retErrors = append(retErrors, errors.New(act.a.Name+":"+act.err.Error()))
 			return
 		}
 
@@ -584,7 +584,7 @@ func (act *action) analyze() {
 		// It looks like there should be !pass.Analyzer.RunDespiteErrors
 		// but govet's cgocall crashes on it. Govet itself contains !pass.Analyzer.RunDespiteErrors condition here
 		// but it exit before it if packages.Load have failed.
-		err = errors.Wrap(&IllTypedError{Pkg: act.pkg}, "analysis skipped")
+		err = fmt.Errorf("analysis skipped: %w", &IllTypedError{Pkg: act.pkg})
 	} else {
 		startedAt = time.Now()
 		act.result, err = pass.Analyzer.Run(pass)
@@ -1038,7 +1038,7 @@ func (lp *loadingPackage) analyze(loadMode LoadMode, loadSem chan struct{}) {
 	defer lp.decUse(loadMode < LoadModeWholeProgram)
 
 	if err := lp.loadWithFacts(loadMode); err != nil {
-		werr := errors.Wrapf(err, "failed to load package %s", lp.pkg.Name)
+		werr := fmt.Errorf("failed to load package %s: %w", lp.pkg.Name, err)
 		// Don't need to write error to errCh, it will be extracted and reported on another layer.
 		// Unblock depending actions and propagate error.
 		for _, act := range lp.actions {
@@ -1279,7 +1279,7 @@ func (lp *loadingPackage) loadImportedPackageWithFacts(loadMode LoadMode) error 
 				Msg:  fmt.Sprintf("could not load export data: %s", err),
 				Kind: packages.ParseError,
 			})
-			return errors.Wrap(err, "could not load export data")
+			return fmt.Errorf("could not load export data: %w", err)
 		}
 	}
 

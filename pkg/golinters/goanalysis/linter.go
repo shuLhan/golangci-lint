@@ -2,6 +2,7 @@ package goanalysis
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"runtime"
@@ -11,7 +12,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/pkg/errors"
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/packages"
 
@@ -149,7 +149,7 @@ func (lnt *Linter) configureAnalyzer(a *analysis.Analyzer, cfg map[string]interf
 		}
 
 		if err := f.Value.Set(valueToString(v)); err != nil {
-			return errors.Wrapf(err, "failed to set analyzer setting %q with value %v", k, v)
+			return fmt.Errorf("failed to set analyzer setting %q with value %v: %s", k, v, err)
 		}
 	}
 
@@ -170,7 +170,7 @@ func (lnt *Linter) configure() error {
 		}
 
 		if err := lnt.configureAnalyzer(a, analyzerSettings); err != nil {
-			return errors.Wrapf(err, "failed to configure analyzer %s", analyzerName)
+			return fmt.Errorf("failed to configure analyzer %s: %s", analyzerName, err)
 		}
 	}
 
@@ -194,8 +194,8 @@ func buildIssuesFromErrorsForTypecheckMode(errs []error, lintCtx *linter.Context
 	var issues []result.Issue
 	uniqReportedIssues := map[string]bool{}
 	for _, err := range errs {
-		itErr, ok := errors.Cause(err).(*IllTypedError)
-		if !ok {
+		var itErr *IllTypedError
+		if !errors.As(err, &itErr) {
 			return nil, err
 		}
 		for _, err := range libpackages.ExtractErrors(itErr.Pkg) {
@@ -238,11 +238,11 @@ func buildIssues(diags []Diagnostic, linterNameBuilder func(diag *Diagnostic) st
 
 func (lnt *Linter) preRun(lintCtx *linter.Context) error {
 	if err := analysis.Validate(lnt.analyzers); err != nil {
-		return errors.Wrap(err, "failed to validate analyzers")
+		return fmt.Errorf("failed to validate analyzers: %w", err)
 	}
 
 	if err := lnt.configure(); err != nil {
-		return errors.Wrap(err, "failed to configure analyzers")
+		return fmt.Errorf("failed to configure analyzers: %w", err)
 	}
 
 	if lnt.contextSetter != nil {
