@@ -1,10 +1,10 @@
 package commands
 
 import (
+	"fmt"
 	"log"
 	"os"
 
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
 	"github.com/golangci/golangci-lint/pkg/lint/linter"
@@ -30,7 +30,7 @@ func (e *Executor) executeLinters(_ *cobra.Command, args []string) {
 		log.Fatalf("Can't get enabled linters: %s", err)
 	}
 
-	color.Green("Enabled by your configuration linters:\n")
+	fmt.Println("Enabled by your configuration linters:")
 	enabledLinters := make([]*linter.Config, 0, len(enabledLintersMap))
 	for _, linter := range enabledLintersMap {
 		enabledLinters = append(enabledLinters, linter)
@@ -44,7 +44,7 @@ func (e *Executor) executeLinters(_ *cobra.Command, args []string) {
 		}
 	}
 
-	color.Red("\nDisabled by your configuration linters:\n")
+	fmt.Println("\nDisabled by your configuration linters:")
 	printLinterConfigs(disabledLCs)
 
 	os.Exit(0)
