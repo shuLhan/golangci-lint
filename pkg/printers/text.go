@@ -4,36 +4,23 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/fatih/color"
-
 	"github.com/golangci/golangci-lint/pkg/logutils"
 	"github.com/golangci/golangci-lint/pkg/result"
 )
 
 type Text struct {
 	printIssuedLine bool
-	useColors       bool
 	printLinterName bool
 
 	log logutils.Log
 }
 
-func NewText(printIssuedLine, useColors, printLinterName bool, log logutils.Log) *Text {
+func NewText(printIssuedLine, printLinterName bool, log logutils.Log) *Text {
 	return &Text{
 		printIssuedLine: printIssuedLine,
-		useColors:       useColors,
 		printLinterName: printLinterName,
 		log:             log,
 	}
-}
-
-func (p Text) SprintfColored(ca color.Attribute, format string, args ...interface{}) string {
-	if !p.useColors {
-		return fmt.Sprintf(format, args...)
-	}
-
-	c := color.New(ca)
-	return c.Sprintf(format, args...)
 }
 
 func (p *Text) Print(ctx context.Context, issues []result.Issue) error {
@@ -52,11 +39,11 @@ func (p *Text) Print(ctx context.Context, issues []result.Issue) error {
 }
 
 func (p Text) printIssue(i *result.Issue) {
-	text := p.SprintfColored(color.FgRed, "%s", i.Text)
+	text := i.Text
 	if p.printLinterName {
 		text += fmt.Sprintf(" (%s)", i.FromLinter)
 	}
-	pos := p.SprintfColored(color.Bold, "%s:%d", i.FilePath(), i.Line())
+	pos := fmt.Sprintf("%s:%d", i.FilePath(), i.Line())
 	if i.Pos.Column != 0 {
 		pos += fmt.Sprintf(":%d", i.Pos.Column)
 	}
@@ -86,5 +73,5 @@ func (p Text) printUnderLinePointer(i *result.Issue) {
 		}
 	}
 
-	fmt.Fprintf(logutils.StdOut, "%s%s\n", string(prefixRunes), p.SprintfColored(color.FgYellow, "^"))
+	fmt.Fprintf(logutils.StdOut, "%s%s\n", string(prefixRunes), "^")
 }

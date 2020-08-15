@@ -25,7 +25,7 @@ func (e *Executor) initVersionConfiguration(cmd *cobra.Command) {
 func initVersionFlagSet(fs *pflag.FlagSet, cfg *config.Config) {
 	// Version config
 	vc := &cfg.Version
-	fs.StringVar(&vc.Format, "format", "", wh("The version's format can be: 'short', 'json'"))
+	fs.StringVar(&vc.Format, "format", "", "The version's format can be: 'short', 'json'")
 }
 
 func (e *Executor) initVersion() {
