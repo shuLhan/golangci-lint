@@ -8,18 +8,16 @@ import (
 )
 
 const (
-	OutFormatJSON              = "json"
-	OutFormatLineNumber        = "line-number"
-	OutFormatColoredLineNumber = "colored-line-number"
-	OutFormatTab               = "tab"
-	OutFormatCheckstyle        = "checkstyle"
-	OutFormatCodeClimate       = "code-climate"
-	OutFormatJunitXML          = "junit-xml"
-	OutFormatGithubActions     = "github-actions"
+	OutFormatJSON          = "json"
+	OutFormatLineNumber    = "line-number"
+	OutFormatTab           = "tab"
+	OutFormatCheckstyle    = "checkstyle"
+	OutFormatCodeClimate   = "code-climate"
+	OutFormatJunitXML      = "junit-xml"
+	OutFormatGithubActions = "github-actions"
 )
 
 var OutFormats = []string{
-	OutFormatColoredLineNumber,
 	OutFormatLineNumber,
 	OutFormatJSON,
 	OutFormatTab,
@@ -526,7 +524,6 @@ type Config struct {
 
 	Output struct {
 		Format              string
-		Color               string
 		PrintIssuedLine     bool   `mapstructure:"print-issued-lines"`
 		PrintLinterName     bool   `mapstructure:"print-linter-name"`
 		UniqByLine          bool   `mapstructure:"uniq-by-line"`

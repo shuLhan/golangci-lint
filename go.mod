@@ -8,7 +8,6 @@ require (
 	github.com/bombsimon/wsl/v3 v3.1.0
 	github.com/daixiang0/gci v0.2.1
 	github.com/denis-tingajkin/go-header v0.3.1
-	github.com/fatih/color v1.9.0
 	github.com/go-critic/go-critic v0.5.0
 	github.com/go-xmlfmt/xmlfmt v0.0.0-20191208150333-d5b6f63a941b
 	github.com/gofrs/flock v0.7.1
@@ -31,7 +30,6 @@ require (
 	github.com/kyoh86/exportloopref v0.1.7
 	github.com/maratori/testpackage v1.0.1
 	github.com/matoous/godox v0.0.0-20190911065817-5d6d842e92eb // v1.0
-	github.com/mattn/go-colorable v0.1.7
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/nakabonne/nestif v0.3.0
