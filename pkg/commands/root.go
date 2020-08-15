@@ -140,10 +140,10 @@ func (e *Executor) needVersionOption() bool {
 }
 
 func initRootFlagSet(fs *pflag.FlagSet, cfg *config.Config, needVersionOption bool) {
-	fs.BoolVarP(&cfg.Run.IsVerbose, "verbose", "v", false, wh("verbose output"))
+	fs.BoolVarP(&cfg.Run.IsVerbose, "verbose", "v", false, "verbose output")
 
 	var silent bool
-	fs.BoolVarP(&silent, "silent", "s", false, wh("disables congrats outputs"))
+	fs.BoolVarP(&silent, "silent", "s", false, "disables congrats outputs")
 	if err := fs.MarkHidden("silent"); err != nil {
 		panic(err)
 	}
@@ -153,13 +153,11 @@ func initRootFlagSet(fs *pflag.FlagSet, cfg *config.Config, needVersionOption bo
 		panic(err)
 	}
 
-	fs.StringVar(&cfg.Run.CPUProfilePath, "cpu-profile-path", "", wh("Path to CPU profile output file"))
-	fs.StringVar(&cfg.Run.MemProfilePath, "mem-profile-path", "", wh("Path to memory profile output file"))
-	fs.StringVar(&cfg.Run.TracePath, "trace-path", "", wh("Path to trace output file"))
-	fs.IntVarP(&cfg.Run.Concurrency, "concurrency", "j", getDefaultConcurrency(), wh("Concurrency (default NumCPU)"))
+	fs.StringVar(&cfg.Run.CPUProfilePath, "cpu-profile-path", "", "Path to CPU profile output file")
+	fs.StringVar(&cfg.Run.MemProfilePath, "mem-profile-path", "", "Path to memory profile output file")
+	fs.StringVar(&cfg.Run.TracePath, "trace-path", "", "Path to trace output file")
+	fs.IntVarP(&cfg.Run.Concurrency, "concurrency", "j", getDefaultConcurrency(), "Concurrency (default NumCPU)")
 	if needVersionOption {
-		fs.BoolVar(&cfg.Run.PrintVersion, "version", false, wh("Print version"))
+		fs.BoolVar(&cfg.Run.PrintVersion, "version", false, "Print version")
 	}
-
-	fs.StringVar(&cfg.Output.Color, "color", "auto", wh("Use color when printing; can be 'always', 'auto', or 'never'"))
 }

@@ -6,8 +6,6 @@ import (
 	"io"
 	"text/tabwriter"
 
-	"github.com/fatih/color"
-
 	"github.com/golangci/golangci-lint/pkg/logutils"
 	"github.com/golangci/golangci-lint/pkg/result"
 )
@@ -22,11 +20,6 @@ func NewTab(printLinterName bool, log logutils.Log) *Tab {
 		printLinterName: printLinterName,
 		log:             log,
 	}
-}
-
-func (p Tab) SprintfColored(ca color.Attribute, format string, args ...interface{}) string {
-	c := color.New(ca)
-	return c.Sprintf(format, args...)
 }
 
 func (p *Tab) Print(ctx context.Context, issues []result.Issue) error {
@@ -44,12 +37,12 @@ func (p *Tab) Print(ctx context.Context, issues []result.Issue) error {
 }
 
 func (p Tab) printIssue(i *result.Issue, w io.Writer) {
-	text := p.SprintfColored(color.FgRed, "%s", i.Text)
+	text := i.Text
 	if p.printLinterName {
 		text = fmt.Sprintf("%s\t%s", i.FromLinter, text)
 	}
 
-	pos := p.SprintfColored(color.Bold, "%s:%d", i.FilePath(), i.Line())
+	pos := fmt.Sprintf("%s:%d", i.FilePath(), i.Line())
 	if i.Pos.Column != 0 {
 		pos += fmt.Sprintf(":%d", i.Pos.Column)
 	}

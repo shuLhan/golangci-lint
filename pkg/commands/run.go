@@ -2,6 +2,7 @@ package commands
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -10,8 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fatih/color"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
@@ -31,7 +30,7 @@ func getDefaultIssueExcludeHelp() string {
 	for _, ep := range config.DefaultExcludePatterns {
 		parts = append(parts,
 			fmt.Sprintf("  # %s %s: %s", ep.ID, ep.Linter, ep.Why),
-			fmt.Sprintf("  - %s", color.YellowString(ep.Pattern)),
+			fmt.Sprintf("  - %s", ep.Pattern),
 			"",
 		)
 	}
@@ -41,7 +40,7 @@ func getDefaultIssueExcludeHelp() string {
 func getDefaultDirectoryExcludeHelp() string {
 	parts := []string{"Use or not use default excluded directories:"}
 	for _, dir := range packages.StdExcludeDirRegexps {
-		parts = append(parts, fmt.Sprintf("  - %s", color.YellowString(dir)))
+		parts = append(parts, fmt.Sprintf("  - %s", dir))
 	}
 	parts = append(parts, "")
 	return strings.Join(parts, "\n")
@@ -49,10 +48,6 @@ func getDefaultDirectoryExcludeHelp() string {
 
 const welcomeMessage = "Run this tool in cloud on every github pull " +
 	"request in https://golangci.com for free (public repos)"
-
-func wh(text string) string {
-	return color.GreenString(text)
-}
 
 const defaultTimeout = time.Minute
 
@@ -75,14 +70,14 @@ func initFlagSet(fs *pflag.FlagSet, cfg *config.Config, m *lintersdb.Manager, is
 	// Output config
 	oc := &cfg.Output
 	fs.StringVar(&oc.Format, "out-format",
-		config.OutFormatColoredLineNumber,
-		wh(fmt.Sprintf("Format of output: %s", strings.Join(config.OutFormats, "|"))))
-	fs.BoolVar(&oc.PrintIssuedLine, "print-issued-lines", true, wh("Print lines of code with issue"))
-	fs.BoolVar(&oc.PrintLinterName, "print-linter-name", true, wh("Print linter name in issue line"))
-	fs.BoolVar(&oc.UniqByLine, "uniq-by-line", true, wh("Make issues output unique by line"))
-	fs.BoolVar(&oc.SortResults, "sort-results", false, wh("Sort linter results"))
-	fs.BoolVar(&oc.PrintWelcomeMessage, "print-welcome", false, wh("Print welcome message"))
-	fs.StringVar(&oc.PathPrefix, "path-prefix", "", wh("Path prefix to add to output"))
+		config.OutFormatLineNumber,
+		fmt.Sprintf("Format of output: %s", strings.Join(config.OutFormats, "|")))
+	fs.BoolVar(&oc.PrintIssuedLine, "print-issued-lines", true, "Print lines of code with issue")
+	fs.BoolVar(&oc.PrintLinterName, "print-linter-name", true, "Print linter name in issue line")
+	fs.BoolVar(&oc.UniqByLine, "uniq-by-line", true, "Make issues output unique by line")
+	fs.BoolVar(&oc.SortResults, "sort-results", false, "Sort linter results")
+	fs.BoolVar(&oc.PrintWelcomeMessage, "print-welcome", false, "Print welcome message")
+	fs.StringVar(&oc.PathPrefix, "path-prefix", "", "Path prefix to add to output")
 	hideFlag("print-welcome") // no longer used
 
 	// Run config
@@ -90,30 +85,30 @@ func initFlagSet(fs *pflag.FlagSet, cfg *config.Config, m *lintersdb.Manager, is
 	fs.StringVar(&rc.ModulesDownloadMode, "modules-download-mode", "",
 		"Modules download mode. If not empty, passed as -mod=<mode> to go tools")
 	fs.IntVar(&rc.ExitCodeIfIssuesFound, "issues-exit-code",
-		exitcodes.IssuesFound, wh("Exit code when issues were found"))
-	fs.StringSliceVar(&rc.BuildTags, "build-tags", nil, wh("Build tags"))
+		exitcodes.IssuesFound, "Exit code when issues were found")
+	fs.StringSliceVar(&rc.BuildTags, "build-tags", nil, "Build tags")
 
-	fs.DurationVar(&rc.Timeout, "deadline", defaultTimeout, wh("Deadline for total work"))
+	fs.DurationVar(&rc.Timeout, "deadline", defaultTimeout, "Deadline for total work")
 	if err := fs.MarkHidden("deadline"); err != nil {
 		panic(err)
 	}
-	fs.DurationVar(&rc.Timeout, "timeout", defaultTimeout, wh("Timeout for total work"))
+	fs.DurationVar(&rc.Timeout, "timeout", defaultTimeout, "Timeout for total work")
 
-	fs.BoolVar(&rc.AnalyzeTests, "tests", true, wh("Analyze tests (*_test.go)"))
+	fs.BoolVar(&rc.AnalyzeTests, "tests", true, "Analyze tests (*_test.go)")
 	fs.BoolVar(&rc.PrintResourcesUsage, "print-resources-usage", false,
-		wh("Print avg and max memory usage of golangci-lint and total time"))
-	fs.StringVarP(&rc.Config, "config", "c", "", wh("Read config from file path `PATH`"))
-	fs.BoolVar(&rc.NoConfig, "no-config", false, wh("Don't read config"))
-	fs.StringSliceVar(&rc.SkipDirs, "skip-dirs", nil, wh("Regexps of directories to skip"))
+		"Print avg and max memory usage of golangci-lint and total time")
+	fs.StringVarP(&rc.Config, "config", "c", "", "Read config from file path `PATH`")
+	fs.BoolVar(&rc.NoConfig, "no-config", false, "Don't read config")
+	fs.StringSliceVar(&rc.SkipDirs, "skip-dirs", nil, "Regexps of directories to skip")
 	fs.BoolVar(&rc.UseDefaultSkipDirs, "skip-dirs-use-default", true, getDefaultDirectoryExcludeHelp())
-	fs.StringSliceVar(&rc.SkipFiles, "skip-files", nil, wh("Regexps of files to skip"))
+	fs.StringSliceVar(&rc.SkipFiles, "skip-files", nil, "Regexps of files to skip")
 
 	const allowParallelDesc = "Allow multiple parallel golangci-lint instances running. " +
 		"If false (default) - golangci-lint acquires file lock on start."
-	fs.BoolVar(&rc.AllowParallelRunners, "allow-parallel-runners", false, wh(allowParallelDesc))
+	fs.BoolVar(&rc.AllowParallelRunners, "allow-parallel-runners", false, allowParallelDesc)
 	const allowSerialDesc = "Allow multiple golangci-lint instances running, but serialize them	around a lock. " +
 		"If false (default) - golangci-lint exits with an error if it fails to acquire file lock on start."
-	fs.BoolVar(&rc.AllowSerialRunners, "allow-serial-runners", false, wh(allowSerialDesc))
+	fs.BoolVar(&rc.AllowSerialRunners, "allow-serial-runners", false, allowSerialDesc)
 
 	// Linters settings config
 	lsc := &cfg.LintersSettings
@@ -180,43 +175,43 @@ func initFlagSet(fs *pflag.FlagSet, cfg *config.Config, m *lintersdb.Manager, is
 
 	// Linters config
 	lc := &cfg.Linters
-	fs.StringSliceVarP(&lc.Enable, "enable", "E", nil, wh("Enable specific linter"))
-	fs.StringSliceVarP(&lc.Disable, "disable", "D", nil, wh("Disable specific linter"))
-	fs.BoolVar(&lc.EnableAll, "enable-all", false, wh("Enable all linters"))
+	fs.StringSliceVarP(&lc.Enable, "enable", "E", nil, "Enable specific linter")
+	fs.StringSliceVarP(&lc.Disable, "disable", "D", nil, "Disable specific linter")
+	fs.BoolVar(&lc.EnableAll, "enable-all", false, "Enable all linters")
 	if err := fs.MarkHidden("enable-all"); err != nil {
 		panic(err)
 	}
 	// TODO: run hideFlag("enable-all") to print deprecation message.
 
-	fs.BoolVar(&lc.DisableAll, "disable-all", false, wh("Disable all linters"))
+	fs.BoolVar(&lc.DisableAll, "disable-all", false, "Disable all linters")
 	fs.StringSliceVarP(&lc.Presets, "presets", "p", nil,
-		wh(fmt.Sprintf("Enable presets (%s) of linters. Run 'golangci-lint linters' to see "+
-			"them. This option implies option --disable-all", strings.Join(m.AllPresets(), "|"))))
-	fs.BoolVar(&lc.Fast, "fast", false, wh("Run only fast linters from enabled linters set (first run won't be fast)"))
+		fmt.Sprintf("Enable presets (%s) of linters. Run 'golangci-lint linters' to see "+
+			"them. This option implies option --disable-all", strings.Join(m.AllPresets(), "|")))
+	fs.BoolVar(&lc.Fast, "fast", false, "Run only fast linters from enabled linters set (first run won't be fast)")
 
 	// Issues config
 	ic := &cfg.Issues
-	fs.StringSliceVarP(&ic.ExcludePatterns, "exclude", "e", nil, wh("Exclude issue by regexp"))
+	fs.StringSliceVarP(&ic.ExcludePatterns, "exclude", "e", nil, "Exclude issue by regexp")
 	fs.BoolVar(&ic.UseDefaultExcludes, "exclude-use-default", true, getDefaultIssueExcludeHelp())
-	fs.BoolVar(&ic.ExcludeCaseSensitive, "exclude-case-sensitive", false, wh("If set to true exclude "+
-		"and exclude rules regular expressions are case sensitive"))
+	fs.BoolVar(&ic.ExcludeCaseSensitive, "exclude-case-sensitive", false, "If set to true exclude "+
+		"and exclude rules regular expressions are case sensitive")
 
 	fs.IntVar(&ic.MaxIssuesPerLinter, "max-issues-per-linter", 50,
-		wh("Maximum issues count per one linter. Set to 0 to disable"))
+		"Maximum issues count per one linter. Set to 0 to disable")
 	fs.IntVar(&ic.MaxSameIssues, "max-same-issues", 3,
-		wh("Maximum count of issues with the same text. Set to 0 to disable"))
+		"Maximum count of issues with the same text. Set to 0 to disable")
 
 	fs.BoolVarP(&ic.Diff, "new", "n", false,
-		wh("Show only new issues: if there are unstaged changes or untracked files, only those changes "+
+		"Show only new issues: if there are unstaged changes or untracked files, only those changes "+
 			"are analyzed, else only changes in HEAD~ are analyzed.\nIt's a super-useful option for integration "+
 			"of golangci-lint into existing large codebase.\nIt's not practical to fix all existing issues at "+
 			"the moment of integration: much better to not allow issues in new code.\nFor CI setups, prefer "+
 			"--new-from-rev=HEAD~, as --new can skip linting the current patch if any scripts generate "+
-			"unstaged files before golangci-lint runs."))
+			"unstaged files before golangci-lint runs.")
 	fs.StringVar(&ic.DiffFromRevision, "new-from-rev", "",
-		wh("Show only new issues created after git revision `REV`"))
+		"Show only new issues created after git revision `REV`")
 	fs.StringVar(&ic.DiffPatchFilePath, "new-from-patch", "",
-		wh("Show only new issues created in git patch with file path `PATH`"))
+		"Show only new issues created in git patch with file path `PATH`")
 	fs.BoolVar(&ic.NeedFix, "fix", false, "Fix found issues (if it's supported by the linter)")
 }
 
@@ -272,7 +267,7 @@ func (e *Executor) initRun() {
 	}
 	e.rootCmd.AddCommand(e.runCmd)
 
-	e.runCmd.SetOutput(logutils.StdOut) // use custom output to properly color it in Windows terminals
+	e.runCmd.SetOutput(logutils.StdOut)
 
 	e.initRunConfiguration(e.runCmd)
 }
@@ -320,7 +315,7 @@ func (e *Executor) runAnalysis(ctx context.Context, args []string) ([]result.Iss
 
 	lintCtx, err := e.contextLoader.Load(ctx, lintersToRun)
 	if err != nil {
-		return nil, errors.Wrap(err, "context loading failed")
+		return nil, fmt.Errorf("context loading failed: %w", err)
 	}
 	lintCtx.Log = e.log.Child("linters context")
 
@@ -398,9 +393,9 @@ func (e *Executor) createPrinter() (printers.Printer, error) {
 	switch format {
 	case config.OutFormatJSON:
 		p = printers.NewJSON(&e.reportData)
-	case config.OutFormatColoredLineNumber, config.OutFormatLineNumber:
+	case config.OutFormatLineNumber:
 		p = printers.NewText(e.cfg.Output.PrintIssuedLine,
-			format == config.OutFormatColoredLineNumber, e.cfg.Output.PrintLinterName,
+			e.cfg.Output.PrintLinterName,
 			e.log.Child("text_printer"))
 	case config.OutFormatTab:
 		p = printers.NewTab(e.cfg.Output.PrintLinterName, e.log.Child("tab_printer"))
@@ -439,7 +434,8 @@ func (e *Executor) executeRun(_ *cobra.Command, args []string) {
 	if err := e.runAndPrint(ctx, args); err != nil {
 		e.log.Errorf("Running error: %s", err)
 		if e.exitCode == exitcodes.Success {
-			if exitErr, ok := errors.Cause(err).(*exitcodes.ExitError); ok {
+			var exitErr *exitcodes.ExitError
+			if errors.As(err, &exitErr) {
 				e.exitCode = exitErr.Code
 			} else {
 				e.exitCode = exitcodes.Failure
