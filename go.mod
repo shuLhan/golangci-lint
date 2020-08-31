@@ -7,7 +7,7 @@ require (
 	github.com/OpenPeeDeeP/depguard v1.0.1
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/bombsimon/wsl/v3 v3.1.0
-	github.com/daixiang0/gci v0.2.1
+	github.com/daixiang0/gci v0.2.4
 	github.com/denis-tingajkin/go-header v0.3.1
 	github.com/go-critic/go-critic v0.5.0
 	github.com/go-xmlfmt/xmlfmt v0.0.0-20191208150333-d5b6f63a941b
