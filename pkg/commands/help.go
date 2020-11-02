@@ -6,7 +6,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
 	"github.com/golangci/golangci-lint/pkg/lint/linter"
@@ -53,7 +52,7 @@ func printLinterConfigs(lcs []*linter.Config) {
 			linterDescription = linterDescription[:firstNewline]
 		}
 
-		fmt.Fprintf(logutils.StdOut, "%s%s: %s [fast: %t, auto-fix: %t]\n", color.YellowString(lc.Name()),
+		fmt.Fprintf(logutils.StdOut, "%s%s: %s [fast: %t, auto-fix: %t]\n", lc.Name(),
 			altNamesStr, linterDescription, !lc.IsSlowLinter(), lc.CanAutoFix)
 	}
 }
@@ -72,12 +71,12 @@ func (e *Executor) executeLintersHelp(_ *cobra.Command, args []string) {
 		}
 	}
 
-	color.Green("Enabled by default linters:\n")
+	fmt.Println("Enabled by default linters:")
 	printLinterConfigs(enabledLCs)
-	color.Red("\nDisabled by default linters:\n")
+	fmt.Println("\nDisabled by default linters:")
 	printLinterConfigs(disabledLCs)
 
-	color.Green("\nLinters presets:")
+	fmt.Println("\nLinters presets:")
 	for _, p := range e.DBManager.AllPresets() {
 		linters := e.DBManager.GetAllLinterConfigsForPreset(p)
 		linterNames := []string{}
@@ -85,7 +84,7 @@ func (e *Executor) executeLintersHelp(_ *cobra.Command, args []string) {
 			linterNames = append(linterNames, lc.Name())
 		}
 		sort.Strings(linterNames)
-		fmt.Fprintf(logutils.StdOut, "%s: %s\n", color.YellowString(p), strings.Join(linterNames, ", "))
+		fmt.Fprintf(logutils.StdOut, "%s: %s\n", p, strings.Join(linterNames, ", "))
 	}
 
 	os.Exit(0)
