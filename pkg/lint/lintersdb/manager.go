@@ -300,11 +300,6 @@ func (m Manager) GetAllSupportedLinterConfigs() []*linter.Config {
 			WithPresets(linter.PresetPerformance).
 			WithURL("https://github.com/mdempsky/maligned").
 			Deprecated("The repository of the linter has been archived by the owner.", "v1.38.0", "govet 'fieldalignment'"),
-		linter.NewConfig(golinters.NewDepguard()).
-			WithSince("v1.4.0").
-			WithLoadForGoAnalysis().
-			WithPresets(linter.PresetStyle, linter.PresetImport, linter.PresetModule).
-			WithURL("https://github.com/OpenPeeDeeP/depguard"),
 		linter.NewConfig(golinters.NewMisspell()).
 			WithSince("v1.8.0").
 			WithPresets(linter.PresetStyle, linter.PresetComment).

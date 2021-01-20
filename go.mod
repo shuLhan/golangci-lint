@@ -6,7 +6,6 @@ require (
 	4d63.com/gochecknoglobals v0.0.0-20201008074935-acfc0b28355a
 	github.com/BurntSushi/toml v0.3.1
 	github.com/Djarvur/go-err113 v0.0.0-20210108212216-aea10b59be24
-	github.com/OpenPeeDeeP/depguard v1.0.1
 	github.com/alexkohler/prealloc v1.0.0
 	github.com/ashanbrown/forbidigo v1.2.0
 	github.com/ashanbrown/makezero v0.0.0-20210520155254-b6261585ddde
