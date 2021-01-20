@@ -181,10 +181,6 @@ func TestLintFilesWithLineDirective(t *testing.T) {
 		ExpectHasIssue("File is not `gofmt`-ed with `-s` (gofmt)")
 	r.Run("-Egoimports", "--disable-all", "--no-config", getTestDataDir("linedirective")).
 		ExpectHasIssue("File is not `goimports`-ed (goimports)")
-	r.
-		Run("-Egomodguard", "--disable-all", "--config=testdata/linedirective/gomodguard.yml", getTestDataDir("linedirective")).
-		ExpectHasIssue("import of package `github.com/ryancurrah/gomodguard` is blocked because the module is not " +
-			"in the allowed modules list. (gomodguard)")
 	r.Run("-Elll", "--disable-all", "--config=testdata/linedirective/lll.yml", getTestDataDir("linedirective")).
 		ExpectHasIssue("line is 57 characters (lll)")
 	r.Run("-Emisspell", "--disable-all", "--no-config", getTestDataDir("linedirective")).

@@ -3,7 +3,7 @@
 package main
 
 import (
-	"github.com/ryancurrah/gomodguard"
+	"golang.org/x/text"
 )
 
 func _() {

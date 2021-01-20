@@ -373,10 +373,6 @@ func (m Manager) GetAllSupportedLinterConfigs() []*linter.Config {
 			WithPresets(linter.PresetStyle, linter.PresetError).
 			WithLoadForGoAnalysis().
 			WithURL("https://github.com/Djarvur/go-err113"),
-		linter.NewConfig(golinters.NewGomodguard()).
-			WithSince("v1.25.0").
-			WithPresets(linter.PresetStyle, linter.PresetImport, linter.PresetModule).
-			WithURL("https://github.com/ryancurrah/gomodguard"),
 		linter.NewConfig(golinters.NewGodot()).
 			WithSince("v1.25.0").
 			WithPresets(linter.PresetStyle, linter.PresetComment).
