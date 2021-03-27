@@ -11,7 +11,6 @@ import (
 	"sync"
 
 	"github.com/kisielk/errcheck/errcheck"
-	"github.com/pkg/errors"
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/packages"
 
@@ -127,7 +126,7 @@ func parseIgnoreConfig(s string) (map[string]*regexp.Regexp, error) {
 func getChecker(errCfg *config.ErrcheckSettings) (*errcheck.Checker, error) {
 	ignoreConfig, err := parseIgnoreConfig(errCfg.Ignore)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse 'ignore' directive")
+		return nil, fmt.Errorf("failed to parse 'ignore' directive: %s", err)
 	}
 
 	checker := errcheck.Checker{
@@ -231,7 +230,7 @@ func readExcludeFile(name string) ([]string, error) {
 	}
 
 	if fh == nil {
-		return nil, errors.Wrapf(err, "failed reading exclude file: %s", name)
+		return nil, fmt.Errorf("failed reading exclude file: %s: %s", name, err)
 	}
 
 	scanner := bufio.NewScanner(fh)
@@ -242,7 +241,7 @@ func readExcludeFile(name string) ([]string, error) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return nil, errors.Wrapf(err, "failed scanning file: %s", name)
+		return nil, fmt.Errorf("failed scanning file: %s: %s", name, err)
 	}
 
 	return excludes, nil

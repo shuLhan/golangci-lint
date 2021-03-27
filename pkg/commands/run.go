@@ -77,7 +77,7 @@ func initFlagSet(fs *pflag.FlagSet, cfg *config.Config, m *lintersdb.Manager, is
 	fs.StringVar(&oc.PathPrefix, "path-prefix", "", "Path prefix to add to output")
 	hideFlag("print-welcome") // no longer used
 
-	fs.BoolVar(&cfg.InternalCmdTest, "internal-cmd-test", false, wh("Option is used only for testing golangci-lint command, don't use it"))
+	fs.BoolVar(&cfg.InternalCmdTest, "internal-cmd-test", false, "Option is used only for testing golangci-lint command, don't use it")
 	if err := fs.MarkHidden("internal-cmd-test"); err != nil {
 		panic(err)
 	}

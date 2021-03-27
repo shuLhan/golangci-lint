@@ -8,8 +8,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/pkg/errors"
-
 	"github.com/golangci/golangci-lint/pkg/config"
 	"github.com/golangci/golangci-lint/pkg/fsutils"
 	"github.com/golangci/golangci-lint/pkg/logutils"
@@ -76,14 +74,14 @@ func (f Fixer) fixIssuesInFile(filePath string, issues []result.Issue) error {
 	// can't just use bufio.scanner: it has a line length limit
 	origFileData, err := f.fileCache.GetFileBytes(filePath)
 	if err != nil {
-		return errors.Wrapf(err, "failed to get file bytes for %s", filePath)
+		return fmt.Errorf("failed to get file bytes for %s: %s", filePath, err)
 	}
 	origFileLines := bytes.Split(origFileData, []byte("\n"))
 
 	tmpFileName := filepath.Join(filepath.Dir(filePath), fmt.Sprintf(".%s.golangci_fix", filepath.Base(filePath)))
 	tmpOutFile, err := os.Create(tmpFileName)
 	if err != nil {
-		return errors.Wrapf(err, "failed to make file %s", tmpFileName)
+		return fmt.Errorf("failed to make file %s: %s", tmpFileName, err)
 	}
 
 	// merge multiple issues per line into one issue
@@ -111,7 +109,7 @@ func (f Fixer) fixIssuesInFile(filePath string, issues []result.Issue) error {
 	tmpOutFile.Close()
 	if err = os.Rename(tmpOutFile.Name(), filePath); err != nil {
 		os.Remove(tmpOutFile.Name())
-		return errors.Wrapf(err, "failed to rename %s -> %s", tmpOutFile.Name(), filePath)
+		return fmt.Errorf("failed to rename %s -> %s: %s", tmpOutFile.Name(), filePath, err)
 	}
 
 	return nil
@@ -240,7 +238,7 @@ func (f Fixer) writeFixedFile(origFileLines [][]byte, issues []result.Issue, tmp
 			outLine += "\n"
 		}
 		if _, err := tmpOutFile.WriteString(outLine); err != nil {
-			return errors.Wrap(err, "failed to write output line")
+			return fmt.Errorf("failed to write output line: " + err.Error())
 		}
 	}
 

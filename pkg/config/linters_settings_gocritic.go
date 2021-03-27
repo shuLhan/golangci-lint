@@ -1,13 +1,13 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"sort"
 	"strings"
 
 	_ "github.com/go-critic/go-critic/checkers" // this import register checkers
 	"github.com/go-critic/go-critic/framework/linter"
-	"github.com/pkg/errors"
 
 	"github.com/golangci/golangci-lint/pkg/logutils"
 )
@@ -214,7 +214,7 @@ func (s *GocriticSettings) Validate(log logutils.Log) error {
 		}
 	} else {
 		if err := validateStringsUniq(s.EnabledTags); err != nil {
-			return errors.Wrap(err, "validate enabled tags")
+			return fmt.Errorf("validate enabled tags: %w", err)
 		}
 
 		tagToCheckers := buildGocriticTagToCheckersMap()
@@ -235,14 +235,14 @@ func (s *GocriticSettings) Validate(log logutils.Log) error {
 	}
 
 	if err := validateStringsUniq(s.EnabledChecks); err != nil {
-		return errors.Wrap(err, "validate enabled checks")
+		return fmt.Errorf("validate enabled checks: %w", err)
 	}
 	if err := validateStringsUniq(s.DisabledChecks); err != nil {
-		return errors.Wrap(err, "validate disabled checks")
+		return fmt.Errorf("validate disabled checks: %w", err)
 	}
 
 	if err := s.validateCheckerNames(log); err != nil {
-		return errors.Wrap(err, "validation failed")
+		return fmt.Errorf("validation failed: %w", err)
 	}
 
 	return nil
