@@ -6,7 +6,6 @@ import (
 	"os"
 	"slices"
 
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
@@ -50,7 +49,7 @@ func newRootCommand(info BuildInfo) *rootCommand {
 	}
 
 	fs := rootCmd.Flags()
-	fs.BoolVar(&c.opts.PrintVersion, "version", false, color.GreenString("Print version"))
+	fs.BoolVar(&c.opts.PrintVersion, "version", false, "Print version")
 
 	setupRootPersistentFlags(rootCmd.PersistentFlags(), &c.opts)
 
@@ -84,9 +83,9 @@ func (c *rootCommand) Execute() error {
 }
 
 func setupRootPersistentFlags(fs *pflag.FlagSet, opts *rootOptions) {
-	fs.BoolP("help", "h", false, color.GreenString("Help for a command"))
-	fs.BoolVarP(&opts.Verbose, "verbose", "v", false, color.GreenString("Verbose output"))
-	fs.StringVar(&opts.Color, "color", "auto", color.GreenString("Use color when printing; can be 'always', 'auto', or 'never'"))
+	fs.BoolP("help", "h", false, "Help for a command")
+	fs.BoolVarP(&opts.Verbose, "verbose", "v", false, "Verbose output")
+	fs.StringVar(&opts.Color, "color", "auto", "Use color when printing; can be 'always', 'auto', or 'never'")
 }
 
 func setupLogger(logger logutils.Log) error {
@@ -100,17 +99,6 @@ func setupLogger(logger logutils.Log) error {
 	}
 
 	logutils.SetupVerboseLog(logger, opts.Verbose)
-
-	switch opts.Color {
-	case "always":
-		color.NoColor = false
-	case "never":
-		color.NoColor = true
-	case "auto":
-		// nothing
-	default:
-		logger.Fatalf("invalid value %q for --color; must be 'always', 'auto', or 'never'", opts.Color)
-	}
 
 	return nil
 }

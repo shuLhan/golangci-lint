@@ -5,7 +5,6 @@ import (
 	"go/token"
 	"testing"
 
-	"github.com/fatih/color"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -14,13 +13,6 @@ import (
 )
 
 func TestTab_Print(t *testing.T) {
-	// force color globally
-	backup := color.NoColor
-	t.Cleanup(func() {
-		color.NoColor = backup
-	})
-	color.NoColor = false
-
 	issues := []result.Issue{
 		{
 			FromLinter: "linter-a",
@@ -77,7 +69,7 @@ path/to/fileb.go:300:9  another issue
 			desc:            "enable all options",
 			printLinterName: true,
 			useColors:       true,
-			expected:        "\x1b[1mpath/to/filea.go:10\x1b[22m:4   linter-a  \x1b[31msome issue\x1b[0m\n\x1b[1mpath/to/fileb.go:300\x1b[22m:9  linter-b  \x1b[31manother issue\x1b[0m\n",
+			expected:        "path/to/filea.go:10:4   linter-a  some issue\npath/to/fileb.go:300:9  linter-b  another issue\n",
 		},
 	}
 

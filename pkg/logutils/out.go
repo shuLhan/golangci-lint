@@ -1,11 +1,10 @@
 package logutils
 
 import (
-	"github.com/fatih/color"
-	colorable "github.com/mattn/go-colorable"
+	"os"
 )
 
 var (
-	StdOut = color.Output // https://github.com/golangci/golangci-lint/issues/14
-	StdErr = colorable.NewColorableStderr()
+	StdOut = os.Stdout // https://github.com/golangci/golangci-lint/issues/14
+	StdErr = os.Stderr
 )

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -71,7 +70,7 @@ func newConfigCommand(log logutils.Log, info BuildInfo) *configCommand {
 
 	// ex: --schema jsonschema/golangci.next.jsonschema.json
 	verifyFlagSet := verifyCommand.Flags()
-	verifyFlagSet.StringVar(&c.verifyOpts.schemaURL, "schema", "", color.GreenString("JSON schema URL"))
+	verifyFlagSet.StringVar(&c.verifyOpts.schemaURL, "schema", "", "JSON schema URL")
 	_ = verifyFlagSet.MarkHidden("schema")
 
 	c.cmd = configCmd

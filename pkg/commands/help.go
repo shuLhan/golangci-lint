@@ -6,7 +6,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
 	"github.com/golangci/golangci-lint/pkg/config"
@@ -78,13 +77,13 @@ func (c *helpCommand) execute(_ *cobra.Command, _ []string) {
 		}
 	}
 
-	color.Green("Enabled by default linters:\n")
+	fmt.Println("Enabled by default linters:")
 	printLinters(enabledLCs)
 
-	color.Red("\nDisabled by default linters:\n")
+	fmt.Println("\nDisabled by default linters:")
 	printLinters(disabledLCs)
 
-	color.Green("\nLinters presets:")
+	fmt.Println("\nLinters presets:")
 	c.printPresets()
 }
 
@@ -102,7 +101,7 @@ func (c *helpCommand) printPresets() {
 		}
 		sort.Strings(linterNames)
 
-		_, _ = fmt.Fprintf(logutils.StdOut, "%s: %s\n", color.YellowString(p), strings.Join(linterNames, ", "))
+		_, _ = fmt.Fprintf(logutils.StdOut, "%s: %s\n", p, strings.Join(linterNames, ", "))
 	}
 }
 
@@ -133,10 +132,10 @@ func printLinters(lcs []*linter.Config) {
 
 		deprecatedMark := ""
 		if lc.IsDeprecated() {
-			deprecatedMark = " [" + color.RedString("deprecated") + "]"
+			deprecatedMark = " [deprecated]"
 		}
 
 		_, _ = fmt.Fprintf(logutils.StdOut, "%s%s: %s [fast: %t, auto-fix: %t]\n",
-			color.YellowString(lc.Name()), deprecatedMark, linterDescription, !lc.IsSlowLinter(), lc.CanAutoFix)
+			lc.Name(), deprecatedMark, linterDescription, !lc.IsSlowLinter(), lc.CanAutoFix)
 	}
 }

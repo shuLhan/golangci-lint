@@ -34,7 +34,6 @@ require (
 	github.com/curioswitch/go-reassign v0.2.0
 	github.com/daixiang0/gci v0.13.4
 	github.com/denis-tingaikin/go-header v0.5.0
-	github.com/fatih/color v1.17.0
 	github.com/firefart/nonamedreturns v1.0.5
 	github.com/fzipp/gocyclo v0.6.0
 	github.com/ghostiam/protogetter v0.3.6
@@ -74,7 +73,6 @@ require (
 	github.com/maratori/testableexamples v1.0.0
 	github.com/maratori/testpackage v1.1.1
 	github.com/matoous/godox v0.0.0-20230222163458-006bad1f9d26
-	github.com/mattn/go-colorable v0.1.13
 	github.com/mgechev/revive v1.3.7
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/go-ps v1.0.0
@@ -140,6 +138,7 @@ require (
 	github.com/chavacava/garif v0.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/ettle/strcase v0.2.0 // indirect
+	github.com/fatih/color v1.16.0 // indirect
 	github.com/fatih/structtag v1.2.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
@@ -159,6 +158,7 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect

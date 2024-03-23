@@ -5,8 +5,6 @@ import (
 	"io"
 	"strings"
 
-	"github.com/fatih/color"
-
 	"github.com/golangci/golangci-lint/pkg/logutils"
 	"github.com/golangci/golangci-lint/pkg/result"
 )
@@ -30,16 +28,6 @@ func NewText(printIssuedLine, useColors, printLinterName bool, log logutils.Log,
 	}
 }
 
-func (p *Text) SprintfColored(ca color.Attribute, format string, args ...any) string {
-	c := color.New(ca)
-
-	if !p.useColors {
-		c.DisableColor()
-	}
-
-	return c.Sprintf(format, args...)
-}
-
 func (p *Text) Print(issues []result.Issue) error {
 	for i := range issues {
 		p.printIssue(&issues[i])
@@ -56,11 +44,11 @@ func (p *Text) Print(issues []result.Issue) error {
 }
 
 func (p *Text) printIssue(issue *result.Issue) {
-	text := p.SprintfColored(color.FgRed, "%s", strings.TrimSpace(issue.Text))
+	text := strings.TrimSpace(issue.Text)
 	if p.printLinterName {
 		text += fmt.Sprintf(" (%s)", issue.FromLinter)
 	}
-	pos := p.SprintfColored(color.Bold, "%s:%d", issue.FilePath(), issue.Line())
+	pos := fmt.Sprintf("%s:%d", issue.FilePath(), issue.Line())
 	if issue.Pos.Column != 0 {
 		pos += fmt.Sprintf(":%d", issue.Pos.Column)
 	}
@@ -90,5 +78,5 @@ func (p *Text) printUnderLinePointer(issue *result.Issue) {
 		}
 	}
 
-	fmt.Fprintf(p.w, "%s%s\n", string(prefixRunes), p.SprintfColored(color.FgYellow, "^"))
+	fmt.Fprintf(p.w, "%s%s\n", string(prefixRunes), "^")
 }

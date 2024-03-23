@@ -3,7 +3,6 @@ package commands
 import (
 	"fmt"
 
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -98,9 +97,9 @@ func (c *lintersCommand) execute(_ *cobra.Command, _ []string) error {
 		}
 	}
 
-	color.Green("Enabled by your configuration linters:\n")
+	fmt.Println("Enabled by your configuration linters:")
 	printLinters(enabledLinters)
-	color.Red("\nDisabled by your configuration linters:\n")
+	fmt.Println("\nDisabled by your configuration linters:")
 	printLinters(disabledLCs)
 
 	return nil
