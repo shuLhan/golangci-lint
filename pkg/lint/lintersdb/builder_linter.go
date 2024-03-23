@@ -13,7 +13,6 @@ import (
 	"github.com/golangci/golangci-lint/pkg/golinters/copyloopvar"
 	"github.com/golangci/golangci-lint/pkg/golinters/cyclop"
 	"github.com/golangci/golangci-lint/pkg/golinters/decorder"
-	"github.com/golangci/golangci-lint/pkg/golinters/depguard"
 	"github.com/golangci/golangci-lint/pkg/golinters/dogsled"
 	"github.com/golangci/golangci-lint/pkg/golinters/dupl"
 	"github.com/golangci/golangci-lint/pkg/golinters/dupword"
@@ -196,11 +195,6 @@ func (LinterBuilder) Build(cfg *config.Config) ([]*linter.Config, error) {
 			WithPresets(linter.PresetUnused).
 			WithURL("https://github.com/remyoudompheng/go-misc/tree/master/deadcode").
 			DeprecatedError("The owner seems to have abandoned the linter.", "v1.49.0", "unused"),
-
-		linter.NewConfig(depguard.New(&cfg.LintersSettings.Depguard)).
-			WithSince("v1.4.0").
-			WithPresets(linter.PresetStyle, linter.PresetImport, linter.PresetModule).
-			WithURL("https://github.com/OpenPeeDeeP/depguard"),
 
 		linter.NewConfig(dogsled.New(&cfg.LintersSettings.Dogsled)).
 			WithSince("v1.19.0").

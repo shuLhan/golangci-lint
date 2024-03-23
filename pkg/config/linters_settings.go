@@ -202,7 +202,6 @@ type LintersSettings struct {
 	CopyLoopVar     CopyLoopVarSettings
 	Cyclop          Cyclop
 	Decorder        DecorderSettings
-	Depguard        DepGuardSettings
 	Dogsled         DogsledSettings
 	Dupl            DuplSettings
 	DupWord         DupWordSettings
@@ -322,22 +321,6 @@ type Cyclop struct {
 	MaxComplexity  int     `mapstructure:"max-complexity"`
 	PackageAverage float64 `mapstructure:"package-average"`
 	SkipTests      bool    `mapstructure:"skip-tests"`
-}
-
-type DepGuardSettings struct {
-	Rules map[string]*DepGuardList `mapstructure:"rules"`
-}
-
-type DepGuardList struct {
-	ListMode string         `mapstructure:"list-mode"`
-	Files    []string       `mapstructure:"files"`
-	Allow    []string       `mapstructure:"allow"`
-	Deny     []DepGuardDeny `mapstructure:"deny"`
-}
-
-type DepGuardDeny struct {
-	Pkg  string `mapstructure:"pkg"`
-	Desc string `mapstructure:"desc"`
 }
 
 type DecorderSettings struct {
