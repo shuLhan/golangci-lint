@@ -30,24 +30,24 @@ clean:
 test: export GOLANGCI_LINT_INSTALLED = true
 test: CGO_ENABLED=1
 test: build
-	GL_TEST_RUN=1 ./$(BINARY) run -v
-	GL_TEST_RUN=1 go test -v -parallel 2 ./...
+	GL_TEST_RUN=1 ./$(BINARY) run
+	GL_TEST_RUN=1 go test -parallel 2 ./...
 .PHONY: test
 
 test_race: build_race
-	GL_TEST_RUN=1 ./$(BINARY) run -v --timeout=5m
+	GL_TEST_RUN=1 ./$(BINARY) run --timeout=5m
 .PHONY: test_race
 
 # ex: T=output.go make test_integration
 # the value of `T` is the name of a file from `test/testdata`
 test_integration:
-	GL_TEST_RUN=1 go test -v ./test -count 1 -run TestSourcesFromTestdata/$T
+	GL_TEST_RUN=1 go test ./test -count 1 -run TestSourcesFromTestdata/$T
 .PHONY: test_integration
 
 # ex: T=multiple-issues-fix.go make test_integration_fix
 # the value of `T` is the name of a file from `test/testdata/fix`
 test_integration_fix: build
-	GL_TEST_RUN=1 go test -v ./test -count 1 -run TestFix/$T
+	GL_TEST_RUN=1 go test ./test -count 1 -run TestFix/$T
 .PHONY: test_integration_fix
 
 # Maintenance
